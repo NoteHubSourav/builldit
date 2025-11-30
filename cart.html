@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>BuildIt — Cart</title>
+  <title>BuildIt — Cart & Delivery</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body onload="loadCart()">
+
 <nav>
   <div style="display:flex;align-items:center;gap:12px;">
     <img src="images/logo.svg" alt="BuildIt" style="height:40px;">
@@ -23,13 +24,101 @@
   </div>
 </nav>
 
+<div class="hero" style="background-image:url('images/hero-home.jpg')">
+  Review Cart & Track Orders
+</div>
+
 <div class="cart-box">
   <h2>Your Items</h2>
   <div id="cart-items"></div>
   <h3 id="total"></h3>
-  <button onclick="clearCart()">Checkout</button>
+
+  <h3>Delivery Address</h3>
+  <textarea id="address" placeholder="Enter your address" rows="3" style="width:100%; padding:8px;"></textarea>
+
+  <h3>Select Delivery Time</h3>
+  <select id="deliveryTime" style="width:100%; padding:8px;">
+    <option value="12 PM">12 PM</option>
+    <option value="3 PM">3 PM</option>
+    <option value="7 PM">7 PM</option>
+  </select>
+
+  <h3>Express Delivery (+₹50)</h3>
+  <input type="checkbox" id="expressDelivery"> Yes, I want express delivery
+
+  <button onclick="checkout()" style="margin-top:15px;padding:10px;">Checkout</button>
+
+  <hr style="margin:20px 0;">
+
+  <h2>Track Your Order</h2>
+  <input type="text" id="trackID" placeholder="Enter your Order ID" style="width:100%;padding:8px;">
+  <button onclick="trackOrder()" style="margin-top:10px;padding:8px;">Track</button>
+  <div class="products" id="order-details" style="margin-top:15px;"></div>
 </div>
 
 <script src="js/cart.js"></script>
+<script>
+function checkout(){
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  if(cart.length === 0){
+    alert("Your cart is empty!");
+    return;
+  }
+
+  const address = document.getElementById("address").value.trim();
+  if(!address){
+    alert("Please enter a delivery address!");
+    return;
+  }
+
+  const deliveryTime = document.getElementById("deliveryTime").value;
+  let total = cart.reduce((sum,item)=>sum+item.price,0);
+  const express = document.getElementById("expressDelivery").checked;
+  if(express) total += 50;
+
+  const orderID = 'BLD-' + Math.floor(Math.random()*1000000);
+
+  alert(`Order Placed Successfully!
+Order ID: ${orderID}
+Deliver to: ${address}
+Time Slot: ${deliveryTime}
+Total: ₹${total}`);
+
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+  orders.push({
+    id: orderID,
+    items: cart,
+    address: address,
+    deliveryTime: deliveryTime,
+    express: express,
+    status: 'Processing',
+    total: total
+  });
+  localStorage.setItem("orders", JSON.stringify(orders));
+  localStorage.removeItem("cart");
+  loadCart();
+  document.getElementById("order-details").innerHTML = '';
+}
+
+function trackOrder(){
+  const id = document.getElementById("trackID").value.trim();
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+  const order = orders.find(o => o.id === id);
+  const output = document.getElementById("order-details");
+
+  if(order){
+    output.innerHTML = `<h3>Order ID: ${order.id}</h3>
+      <p>Status: ${order.status}</p>
+      <p>Deliver to: ${order.address}</p>
+      <p>Time Slot: ${order.deliveryTime}</p>
+      <p>Express Delivery: ${order.express ? "Yes" : "No"}</p>
+      <p>Total: ₹${order.total}</p>
+      <h4>Items:</h4>
+      <ul>${order.items.map(i=>`<li>${i.name} - ₹${i.price}</li>`).join('')}</ul>`;
+  } else {
+    output.innerHTML = "<p>Order not found.</p>";
+  }
+}
+</script>
 </body>
 </html>
