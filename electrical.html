@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BuildIt — Electrical</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body onload="loadCart()">
+
+<nav>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <img src="images/logo.svg" alt="BuildIt" style="height:40px;">
+    <div style="font-weight:700;color:white;">BuildIt</div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="construction.html">Construction</a>
+    <a href="plumbing.html">Plumbing</a>
+    <a href="electrical.html">Electrical</a>
+    <a href="paint.html">Paint</a>
+    <a href="plants.html">Plants</a>
+    <a href="services.html">Services</a>
+    <a href="cart.html">Cart</a>
+    <button onclick="toggleDarkMode()">🌙</button>
+  </div>
+</nav>
+
+<div class="hero" style="background-image:url('images/hero-electrical.jpg')">
+  Electrical Items
+</div>
+
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()">
+  <select id="priceFilter" onchange="filterProducts()">
+    <option value="all">All Prices</option>
+    <option value="low">Under ₹500</option>
+    <option value="high">Above ₹500</option>
+  </select>
+</div>
+
+<div class="products">
+  <div class="product" data-price="149">
+    <h3>LED Bulb</h3>
+    <p>₹149</p>
+    <button onclick="addToCart('LED Bulb',149)">Add to Cart</button>
+  </div>
+
+  <div class="product" data-price="299">
+    <h3>Switch Board</h3>
+    <p>₹299</p>
+    <button onclick="addToCart('Switch Board',299)">Add to Cart</button>
+  </div>
+
+  <div class="product" data-price="1499">
+    <h3>Ceiling Fan</h3>
+    <p>₹1,499</p>
+    <button onclick="addToCart('Ceiling Fan',1499)">Add to Cart</button>
+  </div>
+</div>
+
+<script src="js/cart.js"></script>
+</body>
+</html>
